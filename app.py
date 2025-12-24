@@ -5,7 +5,7 @@ import pandas as pd
 st.set_page_config(page_title="Colinde 2025", page_icon="🎄")
 
 # 2. Link-ul tău de date (formatul de export CSV)
-SHEET_URL = "docs.google.com"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/10kHyUpVqxLtJ7e2cELrDtYoXd9kkiwy7cMRReaUy9Eo/export?format=csv"
 
 @st.cache_data(ttl=600)
 def load_data():
@@ -63,6 +63,7 @@ except Exception as e:
 
 st.markdown("---")
 st.caption("Aplicație de Colinde - Crăciun 2025")
+
 
 
 
