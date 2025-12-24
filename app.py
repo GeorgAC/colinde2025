@@ -10,29 +10,29 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/10kHyUpVqxLtJ7e2cELrDtYoXd9k
 @st.cache_data(ttl=600)
 def load_data():
     df = pd.read_csv(SHEET_URL)
+    # Ne asigurăm că datele sunt sortate alfabetic după Titlu
     return df.sort_values(by='Titlu')
 
-# Inițializăm starea paginii (pentru a ști dacă suntem în listă sau în interiorul unei colinde)
-if 'colind_selectat' not in st.session_state:
-    st.session_state.colind_selectat = None
+# Folosim ID-ul unic pentru navigare
+if 'id_selectat' not in st.session_state:
+    st.session_state.id_selectat = None
 
 try:
     df = load_data()
 
-    # --- LOGICA DE NAVIGARE ---
-
     # PAGINA 2: Vizualizare Colindă
-    if st.session_state.colind_selectat:
+    if st.session_state.id_selectat is not None:
         if st.button("⬅️ Înapoi la listă"):
-            st.session_state.colind_selectat = None
+            st.session_state.id_selectat = None
             st.rerun()
 
-        colind = df[df['Titlu'] == st.session_state.colind_selectat].iloc[0]
+        # Căutăm colinda după ID-ul unic, nu după Titlu
+        colind = df[df['ColindID'] == st.session_state.id_selectat].iloc[0]
         
         st.title(f"🎶 {colind['Titlu']}")
         st.markdown("---")
 
-        # Media (YouTube/Dropbox)
+        # Player Video/Audio
         link = str(colind['Link'])
         if "youtube.com" in link or "youtu.be" in link:
             st.video(link)
@@ -46,26 +46,28 @@ try:
     # PAGINA 1: Lista Completă
     else:
         st.title("🎄 Toate Colindele")
-        st.write("Apasă pe un titlu pentru a deschide colinda:")
-        
-        # Bara de căutare pentru filtrare rapidă
-        search = st.text_input("🔍 Caută un titlu:", "")
+        search = st.text_input("🔍 Caută un colind:", "")
         
         filtered_df = df[df['Titlu'].str.contains(search, case=False, na=False)]
 
         st.markdown("---")
         
-        # Generăm lista de butoane (unul sub altul)
+        # Generăm lista de butoane folosind ColindID ca cheie unică
         for index, row in filtered_df.iterrows():
-            if st.button(row['Titlu'], key=row['Titlu'], use_container_width=True):
-                st.session_state.colind_selectat = row['Titlu']
+            # Cheia este acum "ID_Titlu" pentru a fi 100% unică
+            button_key = f"{row['ColindID']}_{row['Titlu']}"
+            if st.button(row['Titlu'], key=button_key, use_container_width=True):
+                st.session_state.id_selectat = row['ColindID']
                 st.rerun()
 
 except Exception as e:
-    st.error(f"Eroare la încărcare: {e}")
+    st.error(f"Eroare: {e}")
+    st.info("Verifică dacă ai adăugat coloana 'ColindID' în tabelul Google Sheets.")
 
 st.markdown("---")
 st.caption("Aplicație de Colinde - 24 Decembrie 2025")
+
+
 
 
 
