@@ -4,7 +4,7 @@ import pandas as pd
 st.set_page_config(page_title="Colinde 2025", page_icon="🎄")
 
 # Link-ul tău de Google Sheets (format CSV)
-SHEET_URL = "https://docs.google.com/spreadsheets/d/10kHyUpVqxLtJ7e2cELrDtYoXd9kkiwy7cMRReaUy9Eo/edit?gid=1805940728#gid=1805940728"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/10kHyUpVqxLtJ7e2cELrDtYoXd9kkiwy7cMRReaUy9Eo/export?format=csv"
 
 @st.cache_data(ttl=600)
 def load_data():
@@ -36,3 +36,4 @@ try:
         st.write(colind['Versuri'])
 except:
     st.error("Verifică dacă tabelul Google Sheets este public (Anyone with link)!")
+
