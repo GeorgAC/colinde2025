@@ -33,7 +33,8 @@ try:
             st.audio(direct_link)
 
         st.subheader("Versuri")
-        st.write(colind['Versuri'])
+        st.text(colind['Versuri'])
 except:
     st.error("Verifică dacă tabelul Google Sheets este public (Anyone with link)!")
+
 
